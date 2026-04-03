@@ -10,7 +10,8 @@ export type WallType =
   | 'wall-horizontal'
   | 'wall-vertical';
 
-export type CellType = 'head' | TrolleyType | AnimalType | WallType | 'grass';
+export type FloorType = 'grass' | 'grass2' | 'grass3' | 'bush' | 'scrub';
+export type CellType = 'head' | TrolleyType | AnimalType | WallType | FloorType;
 
 export interface Segment {
   x: number;

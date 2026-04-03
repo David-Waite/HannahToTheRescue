@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from "react";
-import { GRID_WIDTH, GRID_HEIGHT, TILE_SIZE } from "./constants";
+import { GRID_WIDTH, GRID_HEIGHT, TILE_SIZE, OPPOSITE } from "./constants";
 
 const GAME_PX = GRID_WIDTH * TILE_SIZE; // 480
 import { useInput } from "./hooks/useInput";
@@ -7,6 +7,7 @@ import { useGameLoop, spawnFood } from "./hooks/useGameLoop";
 import { useAudio } from "./hooks/useAudio";
 import GameBoard from "./components/GameBoard";
 import HUD from "./components/HUD";
+import DPad from "./components/DPad";
 import type { Segment, Food, Direction, GameState, AnimalType } from "./types";
 import "./App.css";
 
@@ -65,6 +66,12 @@ export default function App() {
     return () => clearInterval(id);
   }, [gameState]);
 
+  const handleDPad = useCallback((dir: Direction) => {
+    if (gameState !== "PLAYING") return;
+    if (dir === OPPOSITE[pendingDirRef.current]) return;
+    pendingDirRef.current = dir;
+  }, [gameState, pendingDirRef]);
+
   useAudio(gameState);
   useInput(pendingDirRef, gameState);
   useGameLoop({
@@ -98,6 +105,7 @@ export default function App() {
             onRestart={handleStart}
           />
         </div>
+        <DPad onDirection={handleDPad} active={gameState === "PLAYING"} />
       </div>
     </main>
   );

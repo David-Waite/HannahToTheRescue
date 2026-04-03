@@ -1,0 +1,85 @@
+.dpad {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  margin-top: 14px;
+  user-select: none;
+}
+
+/* Hide on desktop (mouse) devices */
+@media (pointer: fine) {
+  .dpad {
+    display: none;
+  }
+}
+
+.inactive {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 3px;
+}
+
+/* ── 3-D pixel button ───────────────────────────────────── */
+.btn {
+  width: 52px;
+  height: 52px;
+
+  /* Face colour */
+  background: #2e5c2e;
+
+  /* Pixel-art 3-D depth: right & bottom = dark shadow, top & left = light highlight */
+  box-shadow:
+    /* outer outline */
+    0 0 0 2px #0a1a0a,
+    /* highlight top-left (1 px each side) */
+    inset 3px 3px 0 0 #5aaf5a,
+    /* shadow bottom-right */
+    inset -3px -3px 0 0 #0f280f,
+    /* raised depth — thick bottom+right */
+    4px 4px 0 0 #0f280f,
+    5px 5px 0 0 #0a1a0a;
+
+  color: #c8e6c9;
+  font-size: 1.2rem;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  image-rendering: pixelated;
+  -webkit-tap-highlight-color: transparent;
+
+  /* Shift down+right on press — no duration so it snaps like a real button */
+  translate: 0 0;
+  transition: translate 0s, box-shadow 0s, background 0s;
+}
+
+/* Pressed: collapse the depth, shift the face down+right */
+.btn:active {
+  background: #245424;
+  translate: 4px 4px;
+  box-shadow:
+    0 0 0 2px #0a1a0a,
+    inset 3px 3px 0 0 #1e3e1e,
+    inset -3px -3px 0 0 #3a7a3a,
+    1px 1px 0 0 #0f280f,
+    2px 2px 0 0 #0a1a0a;
+}
+
+/* ── Centre piece ───────────────────────────────────────── */
+.center {
+  width: 52px;
+  height: 52px;
+  background: #1a2e1a;
+  box-shadow:
+    0 0 0 2px #0a1a0a,
+    inset 2px 2px 0 0 #0f1f0f,
+    inset -2px -2px 0 0 #2e4a2e;
+}

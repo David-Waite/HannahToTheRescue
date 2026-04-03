@@ -6,6 +6,7 @@ interface CellProps {
   type: CellType;
 }
 
+
 const SPRITES: Partial<Record<CellType, string>> = {
   'wall-top-left':     "url('/sprites/enviornment/boundary/TopLeftBoundary.png')",
   'wall-top-right':    "url('/sprites/enviornment/boundary/TopRightBoundary.png')",
@@ -13,6 +14,8 @@ const SPRITES: Partial<Record<CellType, string>> = {
   'wall-bottom-right': "url('/sprites/enviornment/boundary/BottomRightBoundary.png')",
   'wall-horizontal':   "url('/sprites/enviornment/boundary/HorizontalBoundary.png')",
   'wall-vertical':     "url('/sprites/enviornment/boundary/VerticalBoundary.png')",
+  'grass2':            "url('/sprites/enviornment/EnvironmentTile2.png')",
+  'grass3':            "url('/sprites/enviornment/EnvironmentTile3.png')",
   'animal1':           "url('/sprites/sickAnimals/animal1.png')",
   'animal2':           "url('/sprites/sickAnimals/animal2.png')",
   'animal3':           "url('/sprites/sickAnimals/animal3.png')",
@@ -42,8 +45,7 @@ export default function Cell({ type }: CellProps) {
             ? `${TILE_SIZE / 2}px ${TILE_SIZE / 2}px`
             : `${TILE_SIZE}px ${TILE_SIZE}px`,
         }
-      : { backgroundColor: color }
-    ),
+      : { backgroundColor: color }),
   };
 
   return <div style={style} />;

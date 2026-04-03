@@ -1,7 +1,65 @@
 import type { CSSProperties } from "react";
 import { GRID_WIDTH, GRID_HEIGHT, TILE_SIZE, TICK_MS } from "../constants";
 import Cell from "./Cell";
-import type { Segment, Food, Direction, WallType, TrolleyType } from "../types";
+import type { Segment, Food, Direction, WallType, TrolleyType, FloorType } from "../types";
+
+// Seedable pseudo-random (no visible patterns)
+function rand(x: number, y: number, salt = 0): number {
+  let h = (x * 374761393 + y * 1376312589 + salt * 668265263) | 0;
+  h ^= h >>> 13;
+  h = Math.imul(h, 1274126177);
+  h ^= h >>> 16;
+  return (h >>> 0) / 4294967296;
+}
+
+// Deterministic floor map — computed once at module load, never changes
+const FLOOR_MAP = (() => {
+  const map = new Map<string, FloorType>();
+
+  // Scrub zone: upper-left quadrant fading out towards centre
+  const scrubZoneCentreX = GRID_WIDTH  * 0.25;
+  const scrubZoneCentreY = GRID_HEIGHT * 0.3;
+
+  for (let y = 1; y < GRID_HEIGHT - 1; y++) {
+    for (let x = 1; x < GRID_WIDTH - 1; x++) {
+      const r = rand(x, y);
+
+      // Distance from scrub cluster centre (0–1 normalised)
+      const dx = (x - scrubZoneCentreX) / GRID_WIDTH;
+      const dy = (y - scrubZoneCentreY) / GRID_HEIGHT;
+      const scrubChance = Math.max(0, 0.38 - (dx * dx + dy * dy) * 6);
+
+      let tile: FloorType;
+      if (r < scrubChance)               tile = 'scrub';
+      else if (r < 0.18)                 tile = 'grass2';
+      else if (r < 0.26)                 tile = 'grass3';
+      else                               tile = 'grass';
+
+      // Sparse lone bushes spread across the whole map
+      if (tile === 'grass' && rand(x, y, 1) < 0.04) tile = 'bush';
+
+      map.set(`${x},${y}`, tile);
+    }
+  }
+  return map;
+})();
+
+const BUSH_SIZE = TILE_SIZE / 2; // 16px — rendered at native sprite size
+const BUSH_OFFSET = (TILE_SIZE - BUSH_SIZE) / 2; // 8px — centres in tile
+
+// Pre-collect overlay positions (bush + scrub) for rendering above the floor
+const OVERLAY_POSITIONS: { x: number; y: number; type: 'bush' | 'scrub' }[] = [];
+for (let y = 1; y < GRID_HEIGHT - 1; y++) {
+  for (let x = 1; x < GRID_WIDTH - 1; x++) {
+    const t = FLOOR_MAP.get(`${x},${y}`);
+    if (t === 'bush' || t === 'scrub') OVERLAY_POSITIONS.push({ x, y, type: t });
+  }
+}
+
+const OVERLAY_SPRITES: Record<'bush' | 'scrub', string> = {
+  bush:  "url('/sprites/enviornment/EnvironmentTileBush.png')",
+  scrub: "url('/sprites/enviornment/EnvironmentTileScrub.png')",
+};
 
 interface GameBoardProps {
   snake: Segment[];
@@ -61,14 +119,12 @@ export default function GameBoard({
   animFrame,
 }: GameBoardProps) {
   const head = snake[0];
-  const headKey = `${head.x},${head.y}`;
   const body = snake.slice(1) as (Segment & { type: TrolleyType })[];
 
   // Only food and walls go in the cell grid — snake is all overlays
   const foodCell = food
     ? new Map([[`${food.x},${food.y}`, food.type]])
     : new Map<string, string>();
-  const bodyKeys = new Set(body.map((s) => `${s.x},${s.y}`));
 
   const cells: JSX.Element[] = [];
   for (let y = 0; y < GRID_HEIGHT; y++) {
@@ -77,14 +133,14 @@ export default function GameBoard({
         x === 0 || x === GRID_WIDTH - 1 || y === 0 || y === GRID_HEIGHT - 1;
       const key = `${x},${y}`;
 
-      if (key === headKey || bodyKeys.has(key)) {
-        cells.push(<Cell key={key} type="grass" />);
+      if (isWall) {
+        cells.push(<Cell key={key} type={getWallType(x, y)} />);
       } else if (foodCell.has(key)) {
         cells.push(<Cell key={key} type={foodCell.get(key) as any} />);
-      } else if (isWall) {
-        cells.push(<Cell key={key} type={getWallType(x, y)} />);
       } else {
-        cells.push(<Cell key={key} type="grass" />);
+        const floor = FLOOR_MAP.get(key) ?? "grass";
+        const cellType = (floor === "bush" || floor === "scrub") ? "grass" : floor;
+        cells.push(<Cell key={key} type={cellType} />);
       }
     }
   }
@@ -96,7 +152,7 @@ export default function GameBoard({
     gap: 0,
     lineHeight: 0,
     imageRendering: "pixelated",
-    backgroundImage: "url('/sprites/enviornment/EnvironmentTile.png')",
+    backgroundImage: "url('/sprites/enviornment/EnvironmentTile1.png')",
     backgroundRepeat: "repeat",
     backgroundSize: `${TILE_SIZE}px ${TILE_SIZE}px`,
   };
@@ -160,6 +216,26 @@ export default function GameBoard({
           />
         );
       })}
+
+      {/* Bush/scrub overlays — above floor, under trolleys/Hannah */}
+      {OVERLAY_POSITIONS.map(({ x, y, type }) => (
+        <div
+          key={`${type}-${x},${y}`}
+          style={{
+            position: "absolute",
+            left: x * TILE_SIZE + BUSH_OFFSET,
+            top: y * TILE_SIZE + BUSH_OFFSET,
+            width: BUSH_SIZE,
+            height: BUSH_SIZE,
+            backgroundImage: OVERLAY_SPRITES[type],
+            backgroundSize: `${BUSH_SIZE}px ${BUSH_SIZE}px`,
+            backgroundRepeat: "no-repeat",
+            imageRendering: "pixelated",
+            pointerEvents: "none",
+            zIndex: 0,
+          }}
+        />
+      ))}
 
       {/* Hannah — always on top */}
       <div style={hannahStyle} />
