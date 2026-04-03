@@ -123,11 +123,6 @@ export default function GameBoard({
   const head = snake[0];
   const body = snake.slice(1) as (Segment & { type: TrolleyType })[];
 
-  // Only food and walls go in the cell grid — snake is all overlays
-  const foodCell = food
-    ? new Map([[`${food.x},${food.y}`, food.type]])
-    : new Map<string, string>();
-
   const cells: JSX.Element[] = [];
   for (let y = 0; y < GRID_HEIGHT; y++) {
     for (let x = 0; x < GRID_WIDTH; x++) {
@@ -137,8 +132,6 @@ export default function GameBoard({
 
       if (isWall) {
         cells.push(<Cell key={key} type="grass" />);
-      } else if (foodCell.has(key)) {
-        cells.push(<Cell key={key} type={foodCell.get(key) as any} />);
       } else {
         const floor = FLOOR_MAP.get(key) ?? "grass";
         const cellType = (floor === "bush" || floor === "scrub") ? "grass" : floor;
@@ -218,6 +211,25 @@ export default function GameBoard({
           />
         );
       })}
+
+      {/* Food — above bushes/scrubs */}
+      {food && (
+        <div
+          style={{
+            position: "absolute",
+            left: food.x * TILE_SIZE + TILE_SIZE / 4,
+            top: food.y * TILE_SIZE + TILE_SIZE / 4,
+            width: TILE_SIZE / 2,
+            height: TILE_SIZE / 2,
+            backgroundImage: `url('/sprites/sickAnimals/${food.type}.png')`,
+            backgroundSize: `${TILE_SIZE / 2}px ${TILE_SIZE / 2}px`,
+            backgroundRepeat: "no-repeat",
+            imageRendering: "pixelated",
+            pointerEvents: "none",
+            zIndex: 1,
+          }}
+        />
+      )}
 
       {/* Bush/scrub overlays — above floor, under trolleys/Hannah */}
       {OVERLAY_POSITIONS.map(({ x, y, type }) => (
