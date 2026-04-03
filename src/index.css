@@ -1,0 +1,17 @@
+@font-face {
+  font-family: 'MegamaxJonathan';
+  src: url('/fonts/MegamaxJonathanToo-YqOq2.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'MegamaxJonathan', 'Segoe UI', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}

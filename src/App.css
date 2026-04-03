@@ -1,0 +1,42 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #1a2e1a;
+  font-family: 'MegamaxJonathan', 'Segoe UI', system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.score-bar {
+  font-size: 1.2rem;
+  color: #c8e6c9;
+  letter-spacing: 0.05em;
+}
+
+.score-bar strong {
+  color: #ff8f00;
+  font-size: 1.4rem;
+}
+
+/* Positions the overlay directly over the game board */
+.board-container {
+  position: relative;
+  line-height: 0;
+}

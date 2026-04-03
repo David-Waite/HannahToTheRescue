@@ -1,0 +1,168 @@
+/* ── Overlay ─────────────────────────────────────────────── */
+.overlay {
+  position:        absolute;
+  inset:           0;
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  gap:             14px;
+  background:      rgba(0, 0, 0, 0.72);
+  z-index:         10;
+}
+
+/* ── RPG message-box style ──────────────────────────────── */
+.box {
+  background: rgba(10, 28, 10, 0.88);
+  border: 3px solid #4caf50;
+  box-shadow:
+    0 0 0 1px #1b5e20,
+    inset 0 0 0 1px #1b5e20;
+  padding: 14px 40px;
+  text-align: center;
+}
+
+/* ── Title ──────────────────────────────────────────────── */
+.title {
+  font-size: 2rem;
+  color: #e8f5e9;
+  line-height: 1.2;
+  margin: 0;
+  text-shadow: 2px 2px 0 #1b5e20;
+}
+
+.titleAccent {
+  color: #ffb300;
+}
+
+/* ── Sprites row ────────────────────────────────────────── */
+.spritesRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.hannahSprite {
+  width: 96px; /* 3× the 32px frame */
+  height: 96px;
+  /* down idle = col 0, row 0 — sheet scaled 3× (288×384) so pos stays 0 0 */
+  background-image: url("/sprites/hannah.png");
+  background-size: 288px 384px;
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+}
+
+.displaySprite {
+  width: 96px;
+  height: 96px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  image-rendering: pixelated;
+}
+
+.nova {
+  background-image: url("/sprites/display/NovaDisplay.png");
+}
+.bean {
+  background-image: url("/sprites/display/BeanDisplay.png");
+}
+
+/* ── Body text ──────────────────────────────────────────── */
+.subtitle {
+  font-size: 0.9rem;
+  color: #e8f5e9;
+  text-align: center;
+  text-shadow:
+    1px 1px 0 #1b5e20,
+    -1px -1px 0 #1b5e20,
+    1px -1px 0 #1b5e20,
+    -1px 1px 0 #1b5e20;
+  margin: 0;
+}
+
+.controls {
+  font-size: 0.75rem;
+  color: #a5d6a7;
+  text-align: center;
+  text-shadow: 1px 1px 0 #1b5e20;
+  margin: 0;
+}
+
+/* ── Score (game-over) ──────────────────────────────────── */
+.score {
+  font-size: 1rem;
+  color: #e8f5e9;
+  text-align: center;
+  text-shadow: 1px 1px 0 #1b5e20;
+  margin: 0;
+}
+
+.score strong {
+  color: #ffb300;
+  font-size: 1.2rem;
+}
+
+/* ── Saved animals scroll strip ────────────────────────── */
+.savedScroll {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 480px;
+  padding: 10px 12px;
+  background: rgba(10, 28, 10, 0.75);
+  border: 2px solid #4caf50;
+  box-shadow: 0 0 0 1px #1b5e20;
+  scrollbar-width: none; /* Firefox */
+}
+
+.savedScroll::-webkit-scrollbar {
+  display: none;
+} /* Chrome/Safari */
+
+.savedAnimal {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  image-rendering: pixelated;
+}
+
+.noAnimals {
+  font-size: 0.8rem;
+  color: #a5d6a7;
+  text-align: center;
+  padding: 0 16px;
+}
+
+/* ── Button ─────────────────────────────────────────────── */
+.btn {
+  padding: 10px 40px;
+  font-size: 1rem;
+  font-family: inherit;
+  font-weight: bold;
+  background: #2e7d32;
+  color: #e8f5e9;
+  border: 3px solid #1b5e20;
+  box-shadow:
+    0 0 0 1px #81c784,
+    inset 0 0 0 1px #4caf50;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition:
+    background 0.1s,
+    transform 0.1s;
+}
+
+.btn:hover {
+  background: #1b5e20;
+}
+.btn:active {
+  transform: translateY(2px);
+}
