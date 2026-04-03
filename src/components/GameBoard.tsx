@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import { GRID_WIDTH, GRID_HEIGHT, TILE_SIZE, TICK_MS } from "../constants";
 import Cell from "./Cell";
-import type { Segment, Food, Direction, WallType, TrolleyType, FloorType } from "../types";
+import type { Segment, Food, Direction, TrolleyType, FloorType } from "../types";
 
 // Seedable pseudo-random (no visible patterns)
 function rand(x: number, y: number, salt = 0): number {
@@ -98,18 +98,20 @@ function getTrolleySprite(
   return `url('/sprites/rescuedAnimals/${animal}Up.png')`;
 }
 
-function getWallType(x: number, y: number): WallType {
-  const isLeft = x === 0;
-  const isRight = x === GRID_WIDTH - 1;
-  const isTop = y === 0;
-  const isBottom = y === GRID_HEIGHT - 1;
+// Tree constants — native 16×22, rendered 2× = 32×44
+// Crown = top 6px native = top 12px rendered, overlaps the tile above
+const TREE_W = TILE_SIZE;           // 32
+const TREE_H = 22 * (TILE_SIZE / 16); // 44
+const TREE_CROWN = 6 * (TILE_SIZE / 16); // 12px — how far crown extends above tile
 
-  if (isTop && isLeft) return "wall-top-left";
-  if (isTop && isRight) return "wall-top-right";
-  if (isBottom && isLeft) return "wall-bottom-left";
-  if (isBottom && isRight) return "wall-bottom-right";
-  if (isTop || isBottom) return "wall-horizontal";
-  return "wall-vertical";
+// Pre-collect wall positions for tree overlay rendering
+const WALL_POSITIONS: { x: number; y: number }[] = [];
+for (let y = 0; y < GRID_HEIGHT; y++) {
+  for (let x = 0; x < GRID_WIDTH; x++) {
+    if (x === 0 || x === GRID_WIDTH - 1 || y === 0 || y === GRID_HEIGHT - 1) {
+      WALL_POSITIONS.push({ x, y });
+    }
+  }
 }
 
 export default function GameBoard({
@@ -134,7 +136,7 @@ export default function GameBoard({
       const key = `${x},${y}`;
 
       if (isWall) {
-        cells.push(<Cell key={key} type={getWallType(x, y)} />);
+        cells.push(<Cell key={key} type="grass" />);
       } else if (foodCell.has(key)) {
         cells.push(<Cell key={key} type={foodCell.get(key) as any} />);
       } else {
@@ -187,7 +189,7 @@ export default function GameBoard({
 
   return (
     <div
-      style={{ position: "relative", display: "inline-block", lineHeight: 0 }}
+      style={{ position: "relative", display: "inline-block", lineHeight: 0, overflow: "hidden" }}
     >
       <div style={boardStyle}>{cells}</div>
 
@@ -237,7 +239,27 @@ export default function GameBoard({
         />
       ))}
 
-      {/* Hannah — always on top */}
+      {/* Trees — above everything, crown overlaps tile above */}
+      {WALL_POSITIONS.map(({ x, y }) => (
+        <div
+          key={`tree-${x},${y}`}
+          style={{
+            position: "absolute",
+            left: x * TILE_SIZE,
+            top: y * TILE_SIZE - TREE_CROWN,
+            width: TREE_W,
+            height: TREE_H,
+            backgroundImage: "url('/sprites/enviornment/boundary/Tree.png')",
+            backgroundSize: `${TREE_W}px ${TREE_H}px`,
+            backgroundRepeat: "no-repeat",
+            imageRendering: "pixelated",
+            pointerEvents: "none",
+            zIndex: 3,
+          }}
+        />
+      ))}
+
+      {/* Hannah — above floor/bushes, below trees */}
       <div style={hannahStyle} />
     </div>
   );

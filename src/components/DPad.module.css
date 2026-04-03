@@ -28,8 +28,8 @@
 
 /* ── 3-D pixel button ───────────────────────────────────── */
 .btn {
-  width: 52px;
-  height: 52px;
+  width: 104px;
+  height: 104px;
 
   /* Face colour */
   background: #2e5c2e;
@@ -75,8 +75,8 @@
 
 /* ── Centre piece ───────────────────────────────────────── */
 .center {
-  width: 52px;
-  height: 52px;
+  width: 104px;
+  height: 104px;
   background: #1a2e1a;
   box-shadow:
     0 0 0 2px #0a1a0a,
