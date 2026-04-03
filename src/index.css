@@ -11,6 +11,12 @@
   padding: 0;
 }
 
+html, body {
+  overflow: hidden;
+  height: 100%;
+  touch-action: none; /* prevents scroll/zoom on touch */
+}
+
 body {
   font-family: 'MegamaxJonathan', 'Segoe UI', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;

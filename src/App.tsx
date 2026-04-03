@@ -83,9 +83,6 @@ export default function App() {
   return (
     <main className="app">
       <div className="game-wrapper" style={{ zoom: scale }}>
-        <div className="score-bar">
-          Animals Rescued: <strong>{score}</strong>
-        </div>
         <div className="board-container">
           <GameBoard
             snake={snake}

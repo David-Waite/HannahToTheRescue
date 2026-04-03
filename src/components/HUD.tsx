@@ -1,12 +1,13 @@
-import type { GameState, AnimalType } from '../types';
-import styles from './HUD.module.css';
+import ConfettiBoom from "react-confetti-boom";
+import type { GameState, AnimalType } from "../types";
+import styles from "./HUD.module.css";
 
 interface HUDProps {
-  score:        number;
-  gameState:    GameState;
+  score: number;
+  gameState: GameState;
   savedAnimals: AnimalType[];
-  onStart:      () => void;
-  onRestart:    () => void;
+  onStart: () => void;
+  onRestart: () => void;
 }
 
 const ANIMAL_SPRITE: Record<AnimalType, string> = {
@@ -15,16 +16,25 @@ const ANIMAL_SPRITE: Record<AnimalType, string> = {
   animal3: "url('/sprites/sickAnimals/animal3.png')",
 };
 
-export default function HUD({ score, gameState, savedAnimals, onStart, onRestart }: HUDProps) {
-  if (gameState === 'PLAYING') return null;
+export default function HUD({
+  score,
+  gameState,
+  savedAnimals,
+  onStart,
+  onRestart,
+}: HUDProps) {
+  if (gameState === "PLAYING") return null;
 
   return (
     <div className={styles.overlay}>
-      {gameState === 'START' && (
+      {gameState === "START" && (
         <>
           <div className={styles.box}>
             <h1 className={styles.title}>
-              <span className={styles.titleAccent}>Wildlife</span> Rescue
+              Hannah to the{" "}
+              <div className={styles.titleAccent}>
+                Rescue! <span className={styles.splash}>Happy Birthday!</span>
+              </div>
             </h1>
           </div>
 
@@ -35,16 +45,26 @@ export default function HUD({ score, gameState, savedAnimals, onStart, onRestart
           </div>
 
           <p className={styles.subtitle}>Help Hannah rescue sick animals!</p>
-          <p className={styles.controls}>Arrow keys or WASD to move</p>
-          <button className={styles.btn} onClick={onStart}>Start Rescue</button>
+          <p className={`${styles.controls} ${styles.controlsDesktop}`}>
+            Arrow keys or WASD to move
+          </p>
+          <p className={`${styles.controls} ${styles.controlsMobile}`}>
+            Swipe to move
+          </p>
+          <button className={styles.btn} onClick={onStart}>
+            Start
+          </button>
         </>
       )}
 
-      {gameState === 'GAME_OVER' && (
+      {gameState === "GAME_OVER" && (
         <>
+          <ConfettiBoom mode="boom" particleCount={80} shapeSize={12} />
           <div className={styles.box}>
             <h1 className={styles.title}>
-              Hooray! You saved <span className={styles.titleAccent}>{score}</span> animal{score !== 1 ? 's' : ''}!
+              Hooray! You saved{" "}
+              <span className={styles.titleAccent}>{score}</span> animal
+              {score !== 1 ? "s" : ""}!
             </h1>
           </div>
 
@@ -62,7 +82,9 @@ export default function HUD({ score, gameState, savedAnimals, onStart, onRestart
             )}
           </div>
 
-          <button className={styles.btn} onClick={onRestart}>Try Again</button>
+          <button className={styles.btn} onClick={onRestart}>
+            Try Again
+          </button>
         </>
       )}
     </div>

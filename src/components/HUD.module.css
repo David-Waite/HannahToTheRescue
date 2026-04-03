@@ -1,14 +1,14 @@
 /* ── Overlay ─────────────────────────────────────────────── */
 .overlay {
-  position:        absolute;
-  inset:           0;
-  display:         flex;
-  flex-direction:  column;
-  align-items:     center;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap:             14px;
-  background:      rgba(0, 0, 0, 0.72);
-  z-index:         10;
+  gap: 14px;
+  background: rgba(0, 0, 0, 0.72);
+  z-index: 10;
 }
 
 /* ── RPG message-box style ──────────────────────────────── */
@@ -29,10 +29,37 @@
   line-height: 1.2;
   margin: 0;
   text-shadow: 2px 2px 0 #1b5e20;
+  position: relative;
 }
 
 .titleAccent {
   color: #ffb300;
+}
+
+@keyframes splash {
+  0%,
+  100% {
+    transform: rotate(-20deg) scale(0.85);
+  }
+  50% {
+    transform: rotate(-20deg) scale(1.05);
+  }
+}
+
+.splash {
+  display: inline-block;
+  position: absolute;
+  left: calc(100% - 100px);
+  top: 50%;
+  translate: 0 -50%;
+  font-size: 0.65rem;
+  color: #ffff55;
+  text-shadow:
+    2px 2px 0 #aaaa00,
+    -1px -1px 0 #aaaa00;
+  white-space: nowrap;
+  transform-origin: center center;
+  animation: splash 0.8s ease-in-out infinite;
 }
 
 /* ── Sprites row ────────────────────────────────────────── */
@@ -54,8 +81,8 @@
 }
 
 .displaySprite {
-  width: 96px;
-  height: 96px;
+  width: 48px;
+  height: 48px;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: bottom center;
@@ -88,6 +115,19 @@
   text-align: center;
   text-shadow: 1px 1px 0 #1b5e20;
   margin: 0;
+}
+
+.controlsMobile {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .controlsDesktop {
+    display: none;
+  }
+  .controlsMobile {
+    display: block;
+  }
 }
 
 /* ── Score (game-over) ──────────────────────────────────── */
